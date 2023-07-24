@@ -24,6 +24,28 @@ $$
 
 ![](/Pic/1.png)
 
+And in our method, the edge adversarial loss denoted by $\mathcal{L}_adv,1$ is divided into two types $\mathcal{L}_{adv,11}$ and $\mathcal{L}_{adv,12}$, corresponding to two different training stages. In the stages 1, we use $L_1$ norm in the $\mathcal{L}_{adv,11}$ to reduce the difference between generated edges and real edges.
+$$
+\mathcal{L}_{adv,11}=\mathbb{E}_{\boldsymbol{edge\_raw}}\ logD_1(\boldsymbol{edge\_raw})+ \mathbb{E}_{\boldsymbol{edge\_gen}}\ log[1-D_1(\boldsymbol{edge\_gen})]
+$$
+Until the edge training $\mathrm{MAPE}< 0.1$, the training process has come to the stage  2, we adopt $\mathcal{L}_{adv,12}$ only focus on reducing the difference between generated and real edges in the missed region. Also, $\mathcal{L}_{adv,12}$ use $L_2$ norm to magnify the data difference. (In the practical training process, when the epoch reaches 100, it enters the stage 2).
+$$
+\mathcal{L}_{adv,12}=\mathbb{E}_{\boldsymbol{edge\_raw}}\ logD_1(\boldsymbol{edge\_raw\ast M})+ \mathbb{E}_{\boldsymbol{edge\_gen}}\ log[1-D_1(\boldsymbol{edge\_gen\ast M})]
+$$
+Referring to [EdgeConnect](https://arxiv.org/abs/1901.00212), the feature-matching loss $\mathcal{L}_{FM}$ compares the activation maps in the intermediate layers of the discriminator. Similarly, we use $L_1$ norm and $L_2$ norm in the two stages respectively.
+$$
+\mathcal{L}_{FM,j}=\mathbb{E}\bigg{[}\sum_{i=1}^{L}\frac{1}{N_i}\Vert D_1^{(i)}(\boldsymbol{edge\_raw})-D_1^{(i)}(\boldsymbol{edge\_gen})\Vert_j\bigg{]},\ \ j=1,2
+$$
+Where $L$ is the final convolution layer of the discriminator, $N_i$ is the number of elements in the $i$'th activation layer, and $D_1^{(i)}$ is the activation in the $i$'th layer of the discriminator. Further, to ensure the proper generated edge, our method proposes edge structural loss in order to better generate the edge of the missing region.
+
+$$
+\mathcal{L}_{str}=SSIM(\boldsymbol{edge\_raw\ast M},\ \boldsymbol{edge\_gen\ast M})
+$$
+where $SSIM$ is the structural similarity index between two image tensors. The training objective of the network is divided into two stages, each of which consists of adversarial loss, feature matching loss and structural loss.
+$$
+\underset{G_1}{min}\ \underset{D_1}{max}\ \mathcal{L}_{G_1}=\underset{G_1}{min}\bigg{(}\lambda_{adv,1j}\cdot\underset{D_1}{max}(\mathcal{L}_{adv,1j})+\lambda_{FM,j}\cdot\mathcal{L}_{FM,j}+\lambda_{str}\cdot\mathcal{L}_{str}\bigg{)},\ \ j=1,2
+$$
+
 
 
 ### 3.Dataset
