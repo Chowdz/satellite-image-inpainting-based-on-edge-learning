@@ -23,7 +23,9 @@ $$
 $$
 
 
-And in our method, the edge adversarial loss denoted by $\begin{aligned}\mathcal{L}_{adv,1}\end{aligned}$ is divided into two types $\mathcal{L}_{adv,11}$ and $\mathcal{L}_{adv,12}$, corresponding to two different training stages. In the stages 1, we use $L_1$ norm in the $\mathcal{L}_{adv,11}$ to reduce the difference between generated edges and real edges.
+And in our method, the edge adversarial loss denoted by $\mathcal{L}_{adv,1}$\ 
+
+is divided into two types $\mathcal{L}_{adv,11}$ and $\mathcal{L}_{adv,12}$, corresponding to two different training stages. In the stages 1, we use $L_1$ norm in the $\mathcal{L}_{adv,11}$ to reduce the difference between generated edges and real edges.
 $$
 \mathcal{L}_{adv,11}=\mathbb{E}_{\boldsymbol{edgeraw}}\ logD_1(\boldsymbol{edgeraw})+ \mathbb{E}_{\boldsymbol{edgegen}}\ log[1-D_1(\boldsymbol{edgegen})]
 $$
