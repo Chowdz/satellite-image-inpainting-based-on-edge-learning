@@ -6,21 +6,13 @@ A deep learning method suitable for inpainting satellite images, which is charac
 
 
 
-
-
-[TOC]
-
-
-
-
-
 ### 1.Theory Introduction
 
 For the inpainting of satellite images, more attention should be paid to the restoration of landform textures such as rivers, hills, and roads. Learning the edge information of landforms first, complementing the edges of the lost parts, and then inpainting the entire satellite image will make the restoration of landform information more accurate and real. The theoretical part of this method is referred from [EdgeConnect Generative Image Inpainting with Adversarial Edge Learning](https://arxiv.org/abs/1901.00212) which suggested that image inpainting is divided into two parts, the first part is the edge learning network, and the second part is the image inpainting network. For details, please refer to this article, and our method has made practical improvements to the algorithm and training process of the edge learning network, mainly including the following:
 
 ### 2.Our Improvement in Edge Learning Loss Function
 
-Let $\boldsymbol{edge_{_}raw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edge\_miss}$ denotes the corrupted edge map from the Ground truth Image.
+Let $\boldsymbol{edgeraw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edge\_miss}$ denotes the corrupted edge map from the Ground truth Image.
 $$
 \boldsymbol{edge\_miss} =1-\boldsymbol{edge\_map}\odot(1-M)
 $$
