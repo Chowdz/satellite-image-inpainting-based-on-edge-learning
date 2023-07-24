@@ -12,7 +12,7 @@ For the inpainting of satellite images, more attention should be paid to the res
 
 ### 2.Our Improvement in Edge Learning Loss Function
 
-Let $\boldsymbol{edge_{\_} raw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edgemiss}$ denotes the corrupted edge map from the Ground truth Image.
+Let $\boldsymbol{edge_(_) raw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edgemiss}$ denotes the corrupted edge map from the Ground truth Image.
 $$
 \boldsymbol{edgemiss} =1-\boldsymbol{edgeraw}\odot(1-M)
 $$
