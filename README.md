@@ -20,10 +20,8 @@ For the inpainting of satellite images, more attention should be paid to the res
 
 ### 2.Our Improvement in Edge Learning Loss Function
 
-Let $\boldsymbol{edge\_raw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edge\_miss}$ denotes the corrupted edge map from the Ground truth Image.
-$$
-\boldsymbol{edge\_miss} =1-\boldsymbol{edge\_map}\odot(1-M)
-$$
+Let $ \boldsymbol{edge\_raw} $ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edge\_miss}$ denotes the corrupted edge map from the Ground truth Image.
+$$ \boldsymbol{edge\_miss} =1-\boldsymbol{edge\_map}\odot(1-M) $$
 
 Specifically,  Let $G_1$ and $D_1$ be the generator and discriminator for the edge generator network which referred in [EdgeConnect](https://arxiv.org/abs/1901.00212), the generator predicts the edge map for the masked region can be calculated, and different from [EdgeConnect](https://arxiv.org/abs/1901.00212), our method remove the grayscale in the $G_1$.
 $$
