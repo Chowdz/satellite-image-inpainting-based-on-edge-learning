@@ -12,43 +12,33 @@ For the inpainting of satellite images, more attention should be paid to the res
 
 ### 2.Our Improvement in Edge Learning Loss Function
 
-Let $\boldsymbol{edgeraw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edge\_miss}$ denotes the corrupted edge map from the Ground truth Image.
+Let $\boldsymbol{edgeraw}$ be the edge map from the Ground truth Image, this method uses [Canny edge detector](https://ieeexplore.ieee.org/document/4767851), and image mask  $M$ as a pre-condition (1 for the missing region, 0 for background), then the $\boldsymbol{edgemiss}$ denotes the corrupted edge map from the Ground truth Image.
 $$
-\boldsymbol{edge\_miss} =1-\boldsymbol{edge\_map}\odot(1-M)
+\boldsymbol{edgemiss} =1-\boldsymbol{edgeraw}\odot(1-M)
 $$
 
 Specifically,  Let $G_1$ and $D_1$ be the generator and discriminator for the edge generator network which referred in [EdgeConnect](https://arxiv.org/abs/1901.00212), the generator predicts the edge map for the masked region can be calculated, and different from [EdgeConnect](https://arxiv.org/abs/1901.00212), our method remove the grayscale in the $G_1$.
 $$
-\boldsymbol{edge\_gen}=G_1(M,\boldsymbol{edge\_miss})
+\boldsymbol{edgegen}=G_1(M,\boldsymbol{edgemiss})
 $$
-
-<div>			
-    <center>	
-    <img src="E:\Learning\Satellite_Image_Inpainting\MyProject\252700.png"
-         alt=""
-         style="zoom:100%"/>
-    <br>		<!--换行-->
-    Figure 1:Satellite Images and edges with masks.From left to right: (a)Ground Truth Image. (b)Canny Edge. (c)Mask. (d)Masked Edge. (e)Masked Image. We choose to put (c) and (d) in the edge generator.	<!--标题-->
-    </center>
-</div>
 
 
 And in our method, the edge adversarial loss denoted by $\mathcal{L}_{adv,1}$ is divided into two types $\mathcal{L}_{adv,11}$ and $\mathcal{L}_{adv,12}$, corresponding to two different training stages. In the stages 1, we use $L_1$ norm in the $\mathcal{L}_{adv,11}$ to reduce the difference between generated edges and real edges.
 $$
-\mathcal{L}_{adv,11}=\mathbb{E}_{\boldsymbol{edge\_raw}}\ logD_1(\boldsymbol{edge\_raw})+ \mathbb{E}_{\boldsymbol{edge\_gen}}\ log[1-D_1(\boldsymbol{edge\_gen})]
+\mathcal{L}_{adv,11}=\mathbb{E}_{\boldsymbol{edgeraw}}\ logD_1(\boldsymbol{edgeraw})+ \mathbb{E}_{\boldsymbol{edgegen}}\ log[1-D_1(\boldsymbol{edgegen})]
 $$
 Until the edge training $\mathrm{MAPE}< 0.1$, the training process has come to the stage  2, we adopt $\mathcal{L}_{adv,12}$ only focus on reducing the difference between generated and real edges in the missed region. Also, $\mathcal{L}_{adv,12}$ use $L_2$ norm to magnify the data difference. (In the practical training process, when the epoch reaches 100, it enters the stage 2).
 $$
-\mathcal{L}_{adv,12}=\mathbb{E}_{\boldsymbol{edge\_raw}}\ logD_1(\boldsymbol{edge\_raw\ast M})+ \mathbb{E}_{\boldsymbol{edge\_gen}}\ log[1-D_1(\boldsymbol{edge\_gen\ast M})]
+\mathcal{L}_{adv,12}=\mathbb{E}_{\boldsymbol{edgeraw}}\ logD_1(\boldsymbol{edgeraw\ast M})+ \mathbb{E}_{\boldsymbol{edgegen}}\ log[1-D_1(\boldsymbol{edgegen\ast M})]
 $$
 Referring to [EdgeConnect](https://arxiv.org/abs/1901.00212), the feature-matching loss $\mathcal{L}_{FM}$ compares the activation maps in the intermediate layers of the discriminator. Similarly, we use $L_1$ norm and $L_2$ norm in the two stages respectively.
 $$
-\mathcal{L}_{FM,j}=\mathbb{E}\bigg{[}\sum_{i=1}^{L}\frac{1}{N_i}\Vert D_1^{(i)}(\boldsymbol{edge\_raw})-D_1^{(i)}(\boldsymbol{edge\_gen})\Vert_j\bigg{]},\ \ j=1,2
+\mathcal{L}_{FM,j}=\mathbb{E}\bigg{[}\sum_{i=1}^{L}\frac{1}{N_i}\Vert D_1^{(i)}(\boldsymbol{edgeraw})-D_1^{(i)}(\boldsymbol{edgegen})\Vert_j\bigg{]},\ \ j=1,2
 $$
 Where $L$ is the final convolution layer of the discriminator, $N_i$ is the number of elements in the $i$'th activation layer, and $D_1^{(i)}$ is the activation in the $i$'th layer of the discriminator. Further, to ensure the proper generated edge, our method proposes edge structural loss in order to better generate the edge of the missing region.
 
 $$
-\mathcal{L}_{str}=SSIM(\boldsymbol{edge\_raw\ast M},\ \boldsymbol{edge\_gen\ast M})
+\mathcal{L}_{str}=SSIM(\boldsymbol{edgeraw\ast M},\ \boldsymbol{edgegen\ast M})
 $$
 where $SSIM$ is the structural similarity index between two image tensors. The training objective of the network is divided into two stages, each of which consists of adversarial loss, feature matching loss and structural loss.
 $$
