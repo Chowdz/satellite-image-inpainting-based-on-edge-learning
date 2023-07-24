@@ -22,7 +22,7 @@ $$
 \boldsymbol{edgegen}=G_1(M,\boldsymbol{edgemiss})
 $$
 
-
+![](/Pic/1.png)
 
 
 
